@@ -19,6 +19,14 @@ Creep.prototype.update = function() {
         return;
       case 'upgrader':
         this.transcontroller();
+      case 'builder':
+        if (this.buildsite() == true) {
+          return;
+        } else {
+          this.transcontroller();
+        }
+      case 'miner':
+        this.transext();
     }
   } else { //Si no trabaja, ve a por energia
     switch (this.memory.role) {
@@ -26,6 +34,10 @@ Creep.prototype.update = function() {
         this.getEnergy(true, false, false, room);
         return;
       case 'upgrader':
+        this.getEnergy(true, false, false, room);
+      case 'builder':
+        this.getEnergy(false, true, true, room);
+      case 'miner':
         this.getEnergy(true, false, false, room);
     }
   }
@@ -58,6 +70,29 @@ Creep.prototype.transpawn = function (){
 };
 
 /*
+- Función: transext()
+- Descripción: Transfiere energía a los targets
+- Targets: extensions
+*/
+Creep.prototype.transext = function (){
+  var estructura = this.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+    filter: (s) => (s.structureType == STRUCTURE_EXTENSION) && s.energy < s.energyCapacity
+  });
+
+  //Si no hay estructura, buscala
+  if (estructura == undefined) {
+    estructura =  this.room.storage;
+  }
+
+  //Si hay, transfiere
+  if (estructura != undefined) {
+    if(this.transfer(estructura, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      this.moveTo(estructura);
+    }
+  }
+};
+
+/*
 - Función: transcontroller()
 - Descripción: Transfiere energía al controller para mejorarlo
 - Targets: controller
@@ -69,6 +104,23 @@ Creep.prototype.transcontroller =  function (){
 
   if (this.transfer(controller, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
     this.moveTo(controller);
+  }
+};
+
+/*
+- Función: buildsite()
+- Descripción: Transfiere energia a las construcciones nuevas
+- Targets: structures
+*/
+Creep.prototype.buildsite = function() {
+  var build = this.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+  if (build) {
+    if (this.build(build) ==  ERR_NOT_IN_RANGE) {
+      this.moveTo(build);
+      return true;
+    }
+  } else {
+    return false;
   }
 };
 
@@ -91,6 +143,16 @@ Creep.prototype.getEnergy = function (fSource ,fContainer, fStorage, room){
 
     if(this.harvest(source) == ERR_NOT_IN_RANGE){
       this.moveTo(source);
+    }
+  }
+
+  if (fContainer) {
+    var container = this.pos.findClosestByPath(FIND_STRUCTURES,{
+      filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 0
+    });
+
+    if (this.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      this.moveTo(container);
     }
   }
 

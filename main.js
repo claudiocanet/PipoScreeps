@@ -27,6 +27,7 @@ module.exports.loop = function (){
   for(let name in Game.creeps){
     Game.creeps[name].update();
 
-    Game.creeps['Taquitos'].room.visual.text("HOLA", 1, 1);
+
+  //  Game.spawns["Spawn1"].creeps[name].room.visual.text(Memory.creeps[name].role, Game.creeps[name].pos, {color: green});
     }
 }

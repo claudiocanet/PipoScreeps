@@ -4,7 +4,7 @@ StructureSpawn.prototype.cspawner =  function () {
   var cHarvester = _.sum(Game.creeps, (c) => c.memory.role == 'harvester');
   var cUpgrader = _.sum(Game.creeps, (c) => c.memory.role == 'upgrader');
   var cBuilder = _.sum(Game.creeps, (c) => c.memory.role == 'builder');
-  var cMiner = _.sum(Game.creeps, (c) => c.memory.role == 'Miner');
+  var cMiner = _.sum(Game.creeps, (c) => c.memory.role == 'miner');
 
   //Max de creeps
   var maxHarvester = 3;
@@ -54,11 +54,11 @@ StructureSpawn.prototype.cspawner =  function () {
     }
   }
 
-  console.log("+---------------Energía: "+ this.room.energyAvailable + "/" + this.room.energyCapacityAvailable + "-------CPU: " + Game.cpu.getUsed().toFixed(2) + "/" + Game.cpu.tickLimit + "----------------------------------------------------------------------------------------------------------+\n"+
+  console.log("+---------------Energía: "+ this.room.energyAvailable + "/" + this.room.energyCapacityAvailable + "-------CPU: " + Game.cpu.getUsed().toFixed(2) + "/" + Game.cpu.Limit + "----------------------------------------------------------------------------------------------------------+\n"+
               "Harvester: " + cHarvester + "\n"+
-              "\n"+
-              "\n"+
-              "\n"+
+              "Upgrader: " + cUpgrader + "\n"+
+              "Builder: " + cBuilder + "\n"+
+              "Miner: " + cMiner + "\n"+
               "\n"+
               "\n"+
               "\n"+
